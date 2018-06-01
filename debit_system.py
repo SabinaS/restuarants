@@ -1,7 +1,7 @@
 # Creator: Sabina Smajlaj
 # Module for mimicing a debit card system
 
-class Account( boject ):
+class Account( object ):
 
     def __init__( self, initial_balance ):
 	self.id = self.createUniqueID()
