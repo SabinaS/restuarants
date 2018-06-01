@@ -1,6 +1,29 @@
 # Creator: Sabina Smajlaj
 # Module for mimicing a debit card system
 
+class Account( boject ):
+
+    def __init__( self, initial_balance ):
+	self.id = self.createUniqueID()
+	self.balance = initial_balance
+
+    def createUniqueID( self ):
+	''' Create and return a unique id
+	    for each account.
+	'''
+	import uuid
+	uuid = uuid.uuid4()
+	id = str( uuid )
+	return id
+
+
+class Hold( object ):
+
+    def __init__( self, vendor_id, amount ):
+	self.vendor_ib = vendor_id
+	self.amount = amount 
+
+
 class DebitCardSystem( object ):
 
     def __init__( self ):
