@@ -102,4 +102,48 @@ class DebitCardSystem( object ):
 		account.holds.remove( hold )
 		account.balance = account.balance + hold[ 'amount' ]
 	return True
+
+
+import unittest
+class DebitCardSystemTest( unittest.TestCase ):
+
+    def setUp( self ):
+	self.account_1 = Account( 123 )
+	self.account_2 = Account( 234 )
+	self.system = DebitCardSystem()
+
+    def test_create_account( self ):
+	initial_balance = 567
+	account_id = self.system.create_account( initial_balance )
+	self.assertIn( account_id, self.system.accounts )
+	self.assertEqual( initial_balance, self.system.accounts[ account_id ] )
+
+    def test_charge_success( self ):
+        self.assertTrue( self.system.charge( self.account_1, 35 ) )
+
+    def test_charge_fail( self ):
+	self.assertFalse( self.system.charge( self.account_2, 300 ) )
+
+    def test_hold_success( self ):
+	vendor_id = 'pizza_hut'
+	amount = 200
+        hold1 = Hold( vendor_id, amount )
+	self.assertTrue( self.system.hold( self.account_2, vendor_id, amount ) )
+
+    def test_hold_fail( self ):
+	vendor_id = 'pizza_hut'
+	amount1 = 200
+	amount2 = 300
+	hold1 = Hold( vendor_id, amount1 )
+	hold2 = Hold( vendor_id, amount2 )
+	self.system.hold( self.system.hold( self.account_2, vendor_id, amount_1 ) ) 
+	self.assertFalse( self.system.hold( self.account_2, vendor_id, amount_2 ) )
+
+    def test_settle_hold( self ):
+	pass
+
+
+if '__name__' == '__main__':
+    unittest.main()
+
 	
