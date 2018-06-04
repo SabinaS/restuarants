@@ -6,6 +6,7 @@ class Account( object ):
     def __init__( self, initial_balance ):
 	self.id = self.createUniqueID()
 	self.balance = initial_balance
+	self.holds = []
 
     def createUniqueID( self ):
 	''' Create and return a unique id
@@ -20,7 +21,7 @@ class Account( object ):
 class Hold( object ):
 
     def __init__( self, vendor_id, amount ):
-	self.vendor_ib = vendor_id
+	self.vendor_id = vendor_id
 	self.amount = amount 
 
 
@@ -91,16 +92,20 @@ class DebitCardSystem( object ):
 	    amount to be charged.
 	'''
 	account = self.accounts[ account_id ]
-	if vendor_id not in [ hold[ 'vendor_id' ] for hold in account.holds ]:
+	if vendor_id not in [ hold.vendor_id for hold in account.holds ]:
             return False
-	hold_amt = [ hold[ 'amount' ] for hold in account.holds ]
-	actual_balance = account.balance + hold_amt
-	if actual_amount > actual_balance:
-	    return False
+	hold = None
 	for hold in account.holds:
-	    if hold[ 'vendor_id' ] == vendor_id:
-		account.holds.remove( hold )
-		account.balance = account.balance + hold[ 'amount' ]
+	    if hold.vendor_id == vendor_id:
+		hold = hold
+	
+	actual_balance = account.balance + hold.amount
+	if actual_amount > actual_balance:
+	    account.balance = account.balance + hold.amount
+	    account.holds.remove( hold )
+	    return False
+	account.holds.remove( hold )
+	account.balance = account.balance + hold.amount - actual_amount
 	return True
 
 
