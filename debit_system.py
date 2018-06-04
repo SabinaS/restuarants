@@ -80,9 +80,10 @@ class DebitCardSystem( object ):
 	if amount > account.balance:
 	    return False 
 	holds = account.holds
-	if vendor_id in [ hold[ 'vendor_id' ] for hold in account.holds ]:
+	if vendor_id in [ hold.vendor_id for hold in account.holds ]:
 	    return False
 	hold = Hold( vendor_id, amount )
+	account.holds.append( hold )
 	account.balance = account.balance - amount
 	return True
 
@@ -146,15 +147,15 @@ class DebitCardSystemTest( unittest.TestCase ):
 	self.system.hold( self.account_1, vendor_id, 100 )
 	actual_amount = 110
 	self.assertTrue( self.system.settle_hold( self.account_1, vendor_id, actual_amount ) )
-	self.assertEqual( balance - actual_amount, balance )
+	self.assertEqual( balance - actual_amount, self.system.accounts[ self.account_1 ].balance )
 
     def test_settle_hold_fail( self ):
         vendor_id = 'pizza_hut'
-        balance = self.system.accounts[ self.account_1 ].balance
-        self.system.hold( self.account_1, vendor_id, 200 )
+        balance = self.system.accounts[ self.account_2 ].balance
+        self.system.hold( self.account_2, vendor_id, 200 )
         actual_amount = 250
-        self.assertTrue( self.system.settle_hold( self.account_1, vendor_id, actual_amount ) )
-        self.assertEqual( balance, balance )
+        self.assertFalse( self.system.settle_hold( self.account_2, vendor_id, actual_amount ) )
+        self.assertEqual( balance, self.system.accounts[ self.account_2 ].balance )
 
 
 
