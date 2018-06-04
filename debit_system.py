@@ -1,4 +1,3 @@
-# Creator: Sabina Smajlaj
 # Module for mimicing a debit card system
 
 class Account( object ):
@@ -74,7 +73,13 @@ class DebitCardSystem( object ):
     def hold( self, account_id, vendor_id, amount ):
 	''' Place a hold on the account. The balance
 	    should reflect this hold. Only one hold
-	    per vendor_id allowed.
+	    per vendor_id allowed. 
+
+	    Return
+	    ------
+	    bool - if there is already a hold for the vendor 
+	    	or if the balance is insufficient, return 
+	   	False, else True. 
 	'''
 	account = self.accounts[ account_id ]
 	if amount > account.balance:
