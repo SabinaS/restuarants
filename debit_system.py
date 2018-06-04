@@ -90,9 +90,9 @@ class DebitCardSystem( object ):
 	    account has sufficient balance for the actual 
 	    amount to be charged.
 	'''
+	account = self.accounts[ account_id ]
 	if vendor_id not in [ hold[ 'vendor_id' ] for hold in account.holds ]:
             return False
-	account = self.accounts[ account_id ]
 	hold_amt = [ hold[ 'amount' ] for hold in account.holds ]
 	actual_balance = account.balance + hold_amt
 	if actual_amount > actual_balance:
@@ -136,8 +136,8 @@ class DebitCardSystemTest( unittest.TestCase ):
 	amount2 = 300
 	hold1 = Hold( vendor_id, amount1 )
 	hold2 = Hold( vendor_id, amount2 )
-	self.system.hold( self.system.hold( self.account_2, vendor_id, amount_1 ) ) 
-	self.assertFalse( self.system.hold( self.account_2, vendor_id, amount_2 ) )
+	self.system.hold( self.system.hold( self.account_2, vendor_id, amount1 ) ) 
+	self.assertFalse( self.system.hold( self.account_2, vendor_id, amount2 ) )
 
     def test_settle_hold( self ):
 	pass
