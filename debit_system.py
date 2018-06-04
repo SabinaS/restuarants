@@ -108,15 +108,15 @@ import unittest
 class DebitCardSystemTest( unittest.TestCase ):
 
     def setUp( self ):
-	self.account_1 = Account( 123 )
-	self.account_2 = Account( 234 )
 	self.system = DebitCardSystem()
+	self.account_1 = self.system.create_account( 123 )
+	self.account_2 = self.system.create_account( 234 )
 
     def test_create_account( self ):
 	initial_balance = 567
 	account_id = self.system.create_account( initial_balance )
 	self.assertIn( account_id, self.system.accounts )
-	self.assertEqual( initial_balance, self.system.accounts[ account_id ] )
+	self.assertEqual( initial_balance, self.system.accounts[ account_id ].balance )
 
     def test_charge_success( self ):
         self.assertTrue( self.system.charge( self.account_1, 35 ) )
@@ -127,20 +127,31 @@ class DebitCardSystemTest( unittest.TestCase ):
     def test_hold_success( self ):
 	vendor_id = 'pizza_hut'
 	amount = 200
-        hold1 = Hold( vendor_id, amount )
 	self.assertTrue( self.system.hold( self.account_2, vendor_id, amount ) )
 
     def test_hold_fail( self ):
 	vendor_id = 'pizza_hut'
 	amount1 = 200
 	amount2 = 300
-	hold1 = Hold( vendor_id, amount1 )
-	hold2 = Hold( vendor_id, amount2 )
-	self.system.hold( self.system.hold( self.account_2, vendor_id, amount1 ) ) 
+	self.system.hold( self.account_2, vendor_id, amount1 ) 
 	self.assertFalse( self.system.hold( self.account_2, vendor_id, amount2 ) )
 
-    def test_settle_hold( self ):
-	pass
+    def test_settle_hold_success( self ):
+	vendor_id = 'pizza_hut'
+	balance = self.syste.accounts[ self.account_1 ].balance 
+	self.system.hold( self.account_1, vendor_id, 100 )
+	actual_amount = 110
+	self.assertTrue( self.system.settle_hold( self.account_1, vendor_id, actual_amount ) )
+	self.assertEqual( balance - actual_amount, balance )
+
+    def test_settle_hold_fail( self ):
+        vendor_id = 'pizza_hut'
+        balance = self.syste.accounts[ self.account_1 ].balance
+        self.system.hold( self.account_1, vendor_id, 200 )
+        actual_amount = 250
+        self.assertTrue( self.system.settle_hold( self.account_1, vendor_id, actual_amount ) )
+        self.assertEqual( balance, balance )
+
 
 
 if '__name__' == '__main__':
