@@ -98,7 +98,6 @@ class DebitCardSystem( object ):
 	for hold in account.holds:
 	    if hold.vendor_id == vendor_id:
 		hold = hold
-	
 	actual_balance = account.balance + hold.amount
 	if actual_amount > actual_balance:
 	    account.balance = account.balance + hold.amount
@@ -143,7 +142,7 @@ class DebitCardSystemTest( unittest.TestCase ):
 
     def test_settle_hold_success( self ):
 	vendor_id = 'pizza_hut'
-	balance = self.syste.accounts[ self.account_1 ].balance 
+	balance = self.system.accounts[ self.account_1 ].balance 
 	self.system.hold( self.account_1, vendor_id, 100 )
 	actual_amount = 110
 	self.assertTrue( self.system.settle_hold( self.account_1, vendor_id, actual_amount ) )
@@ -151,7 +150,7 @@ class DebitCardSystemTest( unittest.TestCase ):
 
     def test_settle_hold_fail( self ):
         vendor_id = 'pizza_hut'
-        balance = self.syste.accounts[ self.account_1 ].balance
+        balance = self.system.accounts[ self.account_1 ].balance
         self.system.hold( self.account_1, vendor_id, 200 )
         actual_amount = 250
         self.assertTrue( self.system.settle_hold( self.account_1, vendor_id, actual_amount ) )
